@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calificando peliculas</title>
+</head>
+
+<body>
+    <h1>Rating Muvies</h1>
+
+    <form id="movie-form">
+        <label for="title">Muvie:</label>
+        <input type="text" id="title" required>
+        <br>
+        <label for="rating">Rate:</label>
+        <input type="number" id="rating" min="0" max="10" required>
+        <br>
+        <button type="submit">Add muvie and rate on list</button>
+    </form>
+
+    <div id="movies-container">
+        <h2>List:</h2>
+        <ul id="movies-list"></ul>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.js"
+        integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E=" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function () {
+            let movies = [];
+
+            function addMovie(title, rating) {
+                let movie = {
+                    title: title,
+                    rating: rating
+                };
+                movies.push(movie);
+                renderMovies();
+            }
+
+            function deleteMovie(index) {
+                movies.splice(index, 1);
+                renderMovies();
+            }
+
+            function renderMovies() {
+                let moviesList = $('#movies-list');
+                moviesList.empty();
+
+                movies.sort(function (a, b) {
+                    return a.title.localeCompare(b.title);
+                });
+
+                movies.forEach(function (movie, index) {
+                    let listItem = $('<li class="movie"></li>');
+                    let title = $('<span class="movie-title">' + movie.title + '</span>');
+                    let rating = $('<span class="movie-rating">' + movie.rating + '</span>');
+                    let deleteButton = $('<button class="delete-button">Eliminar</button>');
+
+                    deleteButton.click(function () {
+                        deleteMovie(index);
+                    });
+
+                    listItem.append(title, rating, deleteButton);
+                    moviesList.append(listItem);
+                });
+            }
+
+            $('#movie-form').submit(function (event) {
+                event.preventDefault();
+
+                let titleInput = $('#title');
+                let ratingInput = $('#rating');
+
+                let title = titleInput.val();
+                let rating = parseFloat(ratingInput.val());
+
+                if (title.length < 2) {
+                    alert('The title need 2 or more caracteres.');
+                    return;
+                }
+
+                addMovie(title, rating);
+
+                titleInput.val('');
+                ratingInput.val('');
+            });
+        });
+
+
+
+    </script>
+</body>
+
+</html>
